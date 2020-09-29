@@ -1,0 +1,55 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form id='login-form' class="mui-input-group" asp-controller="ActiveInfo" asp-action="Save" method="post">
+    <div class="mui-input-row">
+        <label>新密码</label>
+        <input name="password" type="password" class="mui-input-clear mui-input" placeholder="请输入校园ID新密码">
+    </div>
+    <div class="mui-input-row">
+        <label>密码确认</label>
+        <input name="repassword" type="password" class="mui-input-clear mui-input" placeholder="再次输入密码">
+    </div>
+    <div class="mui-input-row">
+        <label>手机号码</label>
+        <input name="mobile" id="phone" type="text" class="mui-input-clear mui-input" placeholder="请输入手机号码">
+    </div>
+    <div class="mui-input-row">
+        <label>验证码</label>
+        <input name="verify" type="text" style="width:100px;float:left" class="mui-input-clear mui-input" placeholder="请输入">
+        <button type="button" id="sendsms" style="float:right">获取验证码</button>
+    </div>
+    <div class="mui-input-row">
+        <label>安全邮箱</label>
+        <input name="email" type="text" class="mui-input-clear mui-input" placeholder="请输入邮箱地址">
+    </div>
+
+    <div class="mui-content-padded">
+        <button id='login' type="submit" name="save" class="mui-btn mui-btn-block mui-btn-primary">提交</button>
+    </div>
+</form>    
+<div class="mui-content-padded oauth-area">
+
+    </div>
+
+<script language="javascript">
+    $("#sendsms").click(function () {
+        var obj = {};
+        obj.mobile = $("#phone").val();
+        $.ajax({
+            url: "/ActiveInfo/PostSms",
+            data: JSON.stringify(obj),
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            success: function (d) {
+                console.log(d);
+            }
+        });
+    })
+</script>
+

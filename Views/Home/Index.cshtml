@@ -2,7 +2,26 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Hello World.</p>
-</div>
+
+
+    <form id='login-form' class="mui-input-group" asp-controller="Home" asp-action="Login" method="post">
+        <div class="mui-input-row">
+            <label>姓名</label>
+            <input  name="username" type="text" class="mui-input-clear mui-input" placeholder="请输入姓名">
+        </div>
+        <div class="mui-input-row">
+            <label>学号工号</label>
+            <input  type="text" name="schoolnum" class="mui-input-clear mui-input" placeholder="请输入">
+        </div>
+        <div class="mui-input-row">
+            <label>身份证号</label>
+            <input name="idcard" type="text" class="mui-input-clear mui-input" placeholder="请输入身份证">
+        </div>
+
+        <div class="mui-content-padded">
+            <button id='login' type="submit" class="mui-btn mui-btn-block mui-btn-primary">下一步</button>
+        </div>
+    </form>
+    <div class="mui-content-padded oauth-area">
+
+    </div>
