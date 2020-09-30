@@ -51,11 +51,16 @@ namespace WebApplication1.Service {
                     foreach (var key in list) {
                         retStr += string.Format("{0}={1}&", key.Key.Replace("_", "."), key.Value);
                     }
-                    retStr = "?" + retStr.TrimEnd('&');
-                    url = url + retStr;
+                    retStr = retStr.TrimEnd('&');
+                    url = url.Contains("?") ? url + retStr : url + "?" + retStr;
                     url = url.TrimEnd('?');
-                } 
-                
+                } else if (method.Contains("LINE")) {
+                    var list = JsonConvert.DeserializeObject<Dictionary<string, string>>(req);
+                    foreach (var key in list) {
+                        url = url.Replace("{" + key.Key + "}", key.Value);
+                    }
+                }
+
 
 
                 var request = WebRequest.Create(url) as HttpWebRequest;
@@ -81,10 +86,10 @@ namespace WebApplication1.Service {
                             outputStream.Write(postData, 0, postData.Length);
                             outputStream.Close();
                         }
+                        #endregion
                     }
                     #endregion
                 }
-                #endregion
 
 
                 #region 获取响应json

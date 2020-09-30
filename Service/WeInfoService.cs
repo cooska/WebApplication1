@@ -19,5 +19,7 @@ namespace WebApplication1.Service {
             }, out resp);
             return resp;
         }
+
+        public bool AddUser()
     }
 }
