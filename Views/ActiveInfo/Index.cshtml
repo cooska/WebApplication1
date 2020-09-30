@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "保存提交";
 }
 
 <form id='login-form' class="mui-input-group" asp-controller="ActiveInfo" asp-action="Save" method="post">
@@ -20,8 +20,9 @@
     </div>
     <div class="mui-input-row">
         <label>验证码</label>
-        <input name="verify" type="text" style="width:100px;float:left" class="mui-input-clear mui-input" placeholder="请输入">
-        <button type="button" id="sendsms" style="float:right">获取验证码</button>
+        <input name="verify" type="text" style="width:90px;float:left" class="mui-input-clear mui-input" placeholder="请输入">
+        <button type="button" id="sendsms" style="float:right;width:110px" class="mui-btn mui-btn-block mui-btn-primary" onclick="disableWait(60,this,'已发送')">获取验证码</button>
+
     </div>
     <div class="mui-input-row">
         <label>安全邮箱</label>
@@ -37,6 +38,43 @@
     </div>
 
 <script language="javascript">
+    function disableWait(t, obj, waitMessage) {
+        var objTag = obj.tagName.toLowerCase();
+        if (objTag !== "input" && objTag != "button") {
+            return;
+        }
+
+        var v = objTag !== "input" ? obj.innerText : obj.value;
+        var i = setInterval(function () {
+            if (t > 0) {
+                switch (objTag) {
+                    case "input":
+                        obj.value = (--t) + waitMessage;
+                        break;
+                    case "button":
+                        obj.innerText = (--t) + waitMessage;
+                        break;
+                    default:
+                        break;
+                }
+                obj.disabled = true;
+            } else {
+                window.clearInterval(i);
+                switch (objTag) {
+                    case "input":
+                        obj.value = v;
+                        break;
+                    case "button":
+                        obj.innerText = v;
+                        break;
+                    default:
+                        break;
+                }
+                obj.disabled = false;
+            }
+        }, 1000);
+    }
+
     $("#sendsms").click(function () {
         var obj = {};
         obj.mobile = $("#phone").val();

@@ -14,6 +14,7 @@ using WebApplication1.Service;
 using System.Reflection;
 using System.Web;
 using WebApplication1.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace WebApplication1.Controllers
 {
@@ -31,16 +32,36 @@ namespace WebApplication1.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Save()
+        public async Task<IActionResult> Save(FormModel f)
         {
+            var cookie = new FormModel();
+            if (Request.Cookies.ContainsKey(f.mobile)) {
+                var cookiedata = Request.Cookies[f.mobile];
+                cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
+                if (cookie != null && cookie.verify_time.AddMinutes(5) < DateTime.Now)
+                    return View();
+            }
             return Redirect("/Home/Index");
         }
 
         [HttpPost]
-        public async Task< IActionResult > PostSms([FromBody] FormModel f)
+        public void PostSms([FromBody] FormModel f)
         {
-            _sms.SendSms(f.mobile);
-            return Redirect("/Home/Index");
+            var cookie = new FormModel();
+            if(Request.Cookies.ContainsKey(f.mobile)) {
+                var cookiedata = Request.Cookies[f.mobile];
+                cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
+                if (cookie != null && cookie.verify_time.AddMinutes(1) > DateTime.Now)
+                    return;
+            }
+            if (Request.Cookies.ContainsKey(f.mobile)) Response.Cookies.Delete(f.mobile);
+            var code = _sms.SendSms(f.mobile);
+            f.verify = code;
+            f.verify_time = DateTime.Now;
+            CookieOptions options = new CookieOptions();
+            options.Expires = new DateTimeOffset(DateTime.Now.AddSeconds(300));
+            Response.Cookies.Append(f.mobile, JsonConvert.SerializeObject(f),options);
+            //return Redirect("/Home/Index");
         }
 
 

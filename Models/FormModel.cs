@@ -14,5 +14,7 @@ namespace WebApplication1.Models
         public string repassword { get; set; }
         public string mobile { get; set; }
         public string email { get; set; }
+        public string verify { get; set; }
+        public DateTime verify_time { get; set; }
     }
 }

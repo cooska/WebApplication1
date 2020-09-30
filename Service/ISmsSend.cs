@@ -7,6 +7,6 @@ namespace WebApplication1.Service
 {
     public interface ISmsSend
     {
-        void SendSms(string mobile);
+        string SendSms(string mobile);
     }
 }

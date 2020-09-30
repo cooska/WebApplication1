@@ -7,12 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Models;
 
 namespace WebApplication1.Service
 {
     public class SmsSendServer : ISmsSend
     {
-        public void SendSms(string mobile)
+        public string SendSms(string mobile)
         {
             // accesskeyId、secret对应你的阿里云产品id
             IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", "LTAI4FyC1dXXSskjcDZCCbgj", "Z6NcYfqJgDMmq3oW1TgsjarWoQhe0M");
@@ -30,22 +31,26 @@ namespace WebApplication1.Service
                 code = rd.Next(100000, 999999)
             };
             request.AddQueryParameters("PhoneNumbers", mobile);
-            request.AddQueryParameters("SignName", "jonty博客");
-            request.AddQueryParameters("TemplateCode", "SMS_197465032");
+            request.AddQueryParameters("SignName", "吉首大学信息网络中心");
+            request.AddQueryParameters("TemplateCode", "SMS_204110082");
             // 验证码参数，code 转json格式
             request.AddBodyParameters("TemplateParam", JsonConvert.SerializeObject(code));
             try
             {
                 CommonResponse response = client.GetCommonResponse(request);
-                Console.WriteLine(System.Text.Encoding.Default.GetString(response.HttpResponse.Content));
+                var data = JsonConvert.DeserializeObject<AliSmsResponse>(response.Data);
+                //Console.WriteLine(System.Text.Encoding.Default.GetString(response.HttpResponse.Content));
+                return code.code.ToString();
             }
             catch (ServerException e)
             {
                 Console.WriteLine(e);
+                return "";
             }
             catch (ClientException e)
             {
                 Console.WriteLine(e);
+                return "";
             }
         }
     }
