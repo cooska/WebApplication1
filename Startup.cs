@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebApplication1.Models;
 using WebApplication1.Service;
 
 namespace WebApplication1 {
@@ -26,6 +27,7 @@ namespace WebApplication1 {
             services.AddMvc();
             services.AddControllersWithViews();
             services.AddSingleton<ISmsSend, SmsSendServer>();
+            services.AddSingleton<IPortalHttpSend<IReqBase,IRespBase>, PortalHttpSendService<IReqBase, IRespBase>>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>

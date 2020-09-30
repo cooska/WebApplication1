@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Web;
 using WebApplication1.Models;
 using Microsoft.AspNetCore.Http;
+using WebApplication1.Models.WeInfo;
 
 namespace WebApplication1.Controllers
 {
@@ -23,6 +24,7 @@ namespace WebApplication1.Controllers
         private readonly ILogger<ActiveInfoController> _logger;
 
         readonly ISmsSend _sms;
+        readonly IPortalHttpSend<IReqBase, IRespBase> _portalService;
         public ActiveInfoController(ISmsSend sms)
         {
             _sms = sms;
@@ -41,6 +43,9 @@ namespace WebApplication1.Controllers
                 if (cookie != null && cookie.verify_time.AddMinutes(5) < DateTime.Now)
                     return View();
             }
+            
+            if (resp.retCode == "0")
+                return Redirect("/Home/Index");
             return Redirect("/Home/Index");
         }
 
