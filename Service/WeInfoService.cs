@@ -20,6 +20,6 @@ namespace WebApplication1.Service {
             return resp;
         }
 
-        public bool AddUser()
+
     }
 }
