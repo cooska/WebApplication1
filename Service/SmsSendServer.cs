@@ -31,7 +31,7 @@ namespace WebApplication1.Service
                 code = rd.Next(100000, 999999)
             };
             request.AddQueryParameters("PhoneNumbers", mobile);
-            request.AddQueryParameters("SignName", "吉首大学信息网络中心");
+            request.AddQueryParameters("SignName", "信息网络中心");
             request.AddQueryParameters("TemplateCode", "SMS_204110082");
             // 验证码参数，code 转json格式
             request.AddBodyParameters("TemplateParam", JsonConvert.SerializeObject(code));
