@@ -39,8 +39,11 @@ namespace WebApplication1.Service
             {
                 CommonResponse response = client.GetCommonResponse(request);
                 var data = JsonConvert.DeserializeObject<AliSmsResponse>(response.Data);
-                //Console.WriteLine(System.Text.Encoding.Default.GetString(response.HttpResponse.Content));
-                return code.code.ToString();
+                if (data.Code == "OK")
+                    //Console.WriteLine(System.Text.Encoding.Default.GetString(response.HttpResponse.Content));
+                    return code.code.ToString();
+                else
+                    return "";
             }
             catch (ServerException e)
             {

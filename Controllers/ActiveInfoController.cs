@@ -44,8 +44,8 @@ namespace WebApplication1.Controllers
                     return View();
             }
             
-            if (resp.retCode == "0")
-                return Redirect("/Home/Index");
+            //if (resp.retCode == "0")
+            //    return Redirect("/Home/Index");
             return Redirect("/Home/Index");
         }
 
@@ -61,6 +61,8 @@ namespace WebApplication1.Controllers
             }
             if (Request.Cookies.ContainsKey(f.mobile)) Response.Cookies.Delete(f.mobile);
             var code = _sms.SendSms(f.mobile);
+            if (string.IsNullOrEmpty(code))
+                return;
             f.verify = code;
             f.verify_time = DateTime.Now;
             CookieOptions options = new CookieOptions();
