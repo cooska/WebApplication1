@@ -45,7 +45,7 @@ namespace WebApplication1 {
                 o.AccessDeniedPath = new PathString("/Home/Privacy");
 
             });
-            services.AddScoped<DbContext, DbHelperMySQL>();
+            services.AddScoped<IDao, DaoService>();
             var conn = Configuration.GetConnectionString("MysqlConnection");
             services.AddDbContext<DbHelperMySQL>(option => option.UseMySql(conn));
         }

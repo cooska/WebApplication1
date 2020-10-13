@@ -4,21 +4,27 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BakClass.Tools;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using WebApplication1.Models;
+using WebApplication1.Models.SqlData;
+using WebApplication1.Service;
 
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IDao dao;
+        public HomeController(ILogger<HomeController> logger,IDao dbContext)
         {
             _logger = logger;
+            dao = dbContext;
         }
 
         public IActionResult Index()
@@ -50,15 +56,27 @@ namespace WebApplication1.Controllers
             //var response = httpClient.PostAsync(url, formData).Result;
             //var responseContent = response.Content.ReadAsStringAsync().Result;//获取接口返回的值
             //var json= Json(responseContent);
-            
+
             //if (username.Equals("admin") && schoolnum.Equals("123456"))
 
             //{
 
-                
+
 
             //}
-            return Redirect("/ActiveInfo/Index");
+            if (dao.CheckLogin(username, schoolnum, idcard)) {
+                if (Request.Cookies.ContainsKey("loginuser"))
+                    Response.Cookies.Delete("loginuser");
+                var user = new FormModel {
+                    username = username,
+                    schoolnum = schoolnum,
+                    idcard = idcard
+                };
+                Response.Cookies.Append("loginuser", JsonConvert.SerializeObject(user), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
+                return Redirect("/ActiveInfo/Index"); 
+            }
+            else
+                return View();
         }
 
         

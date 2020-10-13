@@ -31,6 +31,10 @@ namespace WebApplication1.Controllers
         }
         public IActionResult Index()
         {
+            var cookiedata = Request.Cookies["loginuser"];
+            if(string.IsNullOrEmpty(cookiedata)) {
+                return Redirect("/Home/Index");
+            }
             return View();
         }
         [HttpPost]
@@ -40,10 +44,16 @@ namespace WebApplication1.Controllers
             if (Request.Cookies.ContainsKey(f.mobile)) {
                 var cookiedata = Request.Cookies[f.mobile];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
-                if (cookie != null && cookie.verify_time.AddMinutes(5) < DateTime.Now)
-                    return View();
+                if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify))
+                    return Index();
+
+                var user = Request.Cookies["loginuser"];
+                var userdata= JsonConvert.DeserializeObject<FormModel>(user);
+                f.username = userdata.username;
+                f.idcard = userdata.idcard;
+                f.schoolnum = userdata.schoolnum;
             }
-            
+
             //if (resp.retCode == "0")
             //    return Redirect("/Home/Index");
             return Redirect("/Home/Index");
