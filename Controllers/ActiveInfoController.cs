@@ -44,7 +44,7 @@ namespace WebApplication1.Controllers
             if (Request.Cookies.ContainsKey(f.mobile)) {
                 var cookiedata = Request.Cookies[f.mobile];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
-                if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify))
+                if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password!=f.repassword))
                     return Index();
 
                 var user = Request.Cookies["loginuser"];
