@@ -37,6 +37,7 @@ namespace WebApplication1.Controllers
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Save(FormModel f)
         {
@@ -52,6 +53,31 @@ namespace WebApplication1.Controllers
                 f.username = userdata.username;
                 f.idcard = userdata.idcard;
                 f.schoolnum = userdata.schoolnum;
+
+                var tokendata = WeInfoService.GetToken();
+                if (tokendata != null && tokendata.errcode == 0) {
+                    var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
+                    var b = false;
+                    if (weuserdata == null || weuserdata.errcode == 60111) {
+                        b = WeInfoService.CreateUserInfo(new AddUserReq {
+                            access_token = tokendata.access_token,
+                            name = f.username,
+                            mobile = f.mobile,
+                            email = f.email
+                        });
+                    } else {
+                        b = WeInfoService.UpdateUserInfo(new UpdateUserInfoReq {
+                            access_token = tokendata.access_token,
+                            userid = f.schoolnum,
+                            name = f.username,
+                            mobile = f.mobile,
+                            email = f.email
+                        });
+                    }
+                    if (b) {
+                        return Redirect("/Home/Index");
+                    }
+                }
             }
 
             //if (resp.retCode == "0")

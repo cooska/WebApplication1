@@ -16,4 +16,16 @@ namespace WebApplication1.Models.SqlData {
         public string password { get; set; }
         public string yddh { get; set; }
     }
+
+    [Table("t_jcsj_xsjbxx")]
+    public class xsxxb {
+        [Key]
+        public string pID { get; set; }
+        public string xh { get; set; }
+        public string xm { get; set; }
+        public string sfzjh { get; set; }
+        //public string password { get; set; }
+        public string yddh { get; set; }
+    }
+
 }

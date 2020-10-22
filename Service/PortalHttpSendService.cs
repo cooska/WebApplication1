@@ -17,7 +17,7 @@ namespace WebApplication1.Service {
     where TResp : IRespBase {
         //开发环境：https://devwisp.sunjee.cn
         //测试环境：https://wisp.sunjee.cn
-        private readonly string _domainUrl = "https://wisp.sunjee.cn";
+        private readonly string _domainUrl = "https://qyapi.weixin.qq.com";
         public bool GetJsonData(TReq req, out TResp resp) {
             var attr = GetAttribute(req.GetType());
             if (attr == null) {
@@ -49,7 +49,7 @@ namespace WebApplication1.Service {
                     var list = JsonConvert.DeserializeObject<Dictionary<string, string>>(req);
                     string retStr = "";
                     foreach (var key in list) {
-                        retStr += string.Format("{0}={1}&", key.Key.Replace("_", "."), key.Value);
+                        retStr += string.Format("{0}={1}&", key.Key, key.Value);
                     }
                     retStr = retStr.TrimEnd('&');
                     url = url.Contains("?") ? url + retStr : url + "?" + retStr;
