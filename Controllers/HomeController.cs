@@ -44,7 +44,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string schoolnum, string idcard)
+        public ActionResult Login(string username, string schoolnum, string idcard)
 
         {
             //string url = "http://127.0.0.1/test"; //接口请求地址
@@ -76,9 +76,9 @@ namespace WebApplication1.Controllers
                 return Redirect("/ActiveInfo/Index"); 
             }
             else
-                return View();
+                return Content("<script>alert('登录失败');history.go(-1);</script>");
         }
 
-        
+
     }
 }

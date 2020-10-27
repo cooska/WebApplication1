@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Org.BouncyCastle.Bcpg.Sig;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -45,8 +46,8 @@ namespace WebApplication1.Service {
                 System.Net.ServicePointManager.Expect100Continue = false;
                 byte[] postData = Encoding.UTF8.GetBytes(req); // 将提交的字符串数据转换成字节数组 
 
+                var list = JsonConvert.DeserializeObject<Dictionary<string, object>>(req);
                 if (method == "GET") {
-                    var list = JsonConvert.DeserializeObject<Dictionary<string, string>>(req);
                     string retStr = "";
                     foreach (var key in list) {
                         retStr += string.Format("{0}={1}&", key.Key, key.Value);
@@ -55,29 +56,27 @@ namespace WebApplication1.Service {
                     url = url.Contains("?") ? url + retStr : url + "?" + retStr;
                     url = url.TrimEnd('?');
                 } else if (method.Contains("LINE")) {
-                    var list = JsonConvert.DeserializeObject<Dictionary<string, string>>(req);
                     foreach (var key in list) {
-                        url = url.Replace("{" + key.Key + "}", key.Value);
+                        if (key.Value != null)
+                            url = url.Replace("{" + key.Key + "}", key.Value.ToString());
                     }
                 }
+                    list.Remove("access_token");
+                    list.Remove("errcode");
+                    list.Remove("errmsg");
+                    var datastr = JsonConvert.SerializeObject(list);
+                    postData = Encoding.UTF8.GetBytes(datastr);
+//#if DEBUG
+//                url += "&debug=1";
+//#endif
 
 
 
                 var request = WebRequest.Create(url) as HttpWebRequest;
                 if (request != null) {
-                    request.Headers = webheader;//指定请求头
-
-                    request.Timeout = 50000;
                     request.Method = method.Replace("LINE", "");
-                    request.KeepAlive = false;
-                    request.AllowAutoRedirect = true;
-                    request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727; " +
-                                        ".NET CLR 3.0.04506.648; .NET CLR 3.5.21022; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)";
-
-                    //读写超时
-                    request.ReadWriteTimeout = 10000;
                     #region 提交请求数据
-                    if (method == "POST") {
+                    if (method.Contains("POST")) {
                         request.ContentType = "application/json; charset=UTF-8";
                         request.ContentLength = postData.Length;
                         //读写超时

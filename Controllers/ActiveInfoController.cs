@@ -59,12 +59,7 @@ namespace WebApplication1.Controllers
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;
                     if (weuserdata == null || weuserdata.errcode == 60111) {
-                        b = WeInfoService.CreateUserInfo(new AddUserReq {
-                            access_token = tokendata.access_token,
-                            name = f.username,
-                            mobile = f.mobile,
-                            email = f.email
-                        });
+                        return Content("<script>alert('你不是吉首大学企业微信用户');window.location.href='/Home/Index';</script>");
                     } else {
                         b = WeInfoService.UpdateUserInfo(new UpdateUserInfoReq {
                             access_token = tokendata.access_token,
@@ -75,7 +70,10 @@ namespace WebApplication1.Controllers
                         });
                     }
                     if (b) {
-                        return Redirect("/Home/Index");
+                        return Content("<script>alert('激活成功');window.location.href='/Home/Index';</script>");
+                    }
+                    else {
+                        return Content("<script>alert('激活失败,请联系管理员');window.location.href='/Home/Index';</script>");
                     }
                 }
             }

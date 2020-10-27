@@ -15,7 +15,7 @@ namespace WebApplication1.Service {
             var serve = new PortalHttpSendService<GetDevTokenReq, GetDevTokenResp>();
             serve.GetJsonData(new GetDevTokenReq {
                  corpid = "ww808efd4c41a2f2b9",
-                 corpsecret = "_AMn3g47MHjGP5ZFpTHGxsyp0hxB3oNPxoCB4JEW7HI"
+                 corpsecret = "GG1w0fowBOTNgynqpgKjr07X44AEL-tbsNAKJ2c__8o"
             }, out resp);
             return resp;
         }

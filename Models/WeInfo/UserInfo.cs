@@ -59,15 +59,7 @@ namespace WebApplication1.Models.WeInfo {
         public List<External_attrItem> external_attr { get; set; }
     }
 
-    public class UserInfo: IRespBase,IReqBase {
-        /// <summary>
-        /// 
-        /// </summary>
-        public int errcode { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string errmsg { get; set; }
+    public class UserInfo: WeResponseBase,IReqBase {
         /// <summary>
         /// 
         /// </summary>
@@ -80,6 +72,7 @@ namespace WebApplication1.Models.WeInfo {
         /// 
         /// </summary>
         public List<int> department { get; set; }
+        public int enable { get; set; } = 1;
         /// <summary>
         /// 
         /// </summary>
@@ -119,7 +112,7 @@ namespace WebApplication1.Models.WeInfo {
         /// <summary>
         /// 
         /// </summary>
-        public string @alias { get; set; }
+        public string alias { get; set; }
         /// <summary>
         /// 广州市海珠区新港中路
         /// </summary>
