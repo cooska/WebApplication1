@@ -65,12 +65,14 @@ namespace WebApplication1.Controllers
 
             //}
             if (dao.CheckLogin(username, schoolnum, idcard)) {
+                var jgdm = dao.GetDepartment(schoolnum);
                 if (Request.Cookies.ContainsKey("loginuser"))
                     Response.Cookies.Delete("loginuser");
                 var user = new FormModel {
                     username = username,
                     schoolnum = schoolnum,
-                    idcard = idcard
+                    idcard = idcard,
+                    department = "101" + jgdm
                 };
                 Response.Cookies.Append("loginuser", JsonConvert.SerializeObject(user), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
                 return Redirect("/ActiveInfo/Index"); 

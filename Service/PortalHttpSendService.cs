@@ -6,11 +6,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using WebApplication1.Models;
 using WebApplication1.Models.Attributes;
+using WebApplication1.Tools;
 
 namespace WebApplication1.Service {
     public class PortalHttpSendService<TReq, TResp> : IPortalHttpSend<TReq, TResp>
@@ -25,6 +27,7 @@ namespace WebApplication1.Service {
                 resp = default;
                 return false; 
             }
+
             return Send<TReq, TResp>(req, attr.PortalName, out resp, new WebHeaderCollection(), attr.MethodEnum);
         }
 
@@ -79,6 +82,16 @@ namespace WebApplication1.Service {
                     if (method.Contains("POST")) {
                         request.ContentType = "application/json; charset=UTF-8";
                         request.ContentLength = postData.Length;
+                        
+                        if (url.Contains("ims.jsu.edu.cn")) {
+                            webheader.Add("Accept", "*/*");
+                            webheader.Add("apikey", "portal");
+                            webheader.Add("timestamp", DateTime.UtcNow.Ticks.ToString());
+                            var sign = SignatureHelper.createSignature(webheader, "/ims/api/account/update/" + list["userid"] + "/" + "userpassword",
+                            "MIIBSwIBADCCASwGByqGSM44BAEwggEfAoGBAP1_U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq_xfW6MPbLm1Vs14E7gB00b_JmYLdrmVClpJ-f6AR7ECLCT7up1_63xhv4O1fnxqimFQ8E-4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjxUjC8yykrmCouuEC_BYHPUCgYEA9-GghdabPd7LvKtcNrhXuXmUr7v6OuqC-VdMCz0HgmdRWVeOutRZT-ZxBxCBgLRJFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN_C_ohNWLx-2J6ASQ7zKTxvqhRkImog9_hWuWfBpKLZl6Ae1UlZAFMO_7PSSoEFgIUKCKbCTC3wcDaQv25MjXrv4vtiF0");
+                            webheader.Add("signature", sign);
+                        }
+
                         //读写超时
                         #region 提交请求数据
                         using (Stream outputStream = request.GetRequestStream()) {

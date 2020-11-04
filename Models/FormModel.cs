@@ -9,6 +9,7 @@ namespace WebApplication1.Models
     {
         public string username { get; set; }
         public string schoolnum { get; set; }
+        public string department { get; set; }
         public string idcard { get; set; }
         public string password { get; set; }
         public string repassword { get; set; }

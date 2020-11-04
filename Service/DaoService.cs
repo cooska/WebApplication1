@@ -18,5 +18,21 @@ namespace WebApplication1.Service {
                 yhxx = mySQL.S_Yhxxbs.SingleOrDefault(o => o.xm == xm && o.xh == xgh && o.sfzjh == sfz);
             return yhxx != null;
         }
+
+        public string GetDepartment(string xgh) {
+            if (xgh.Length <= 6 && xgh != "test") {
+                var yhxx = mySQL.T_Yhxxbs.SingleOrDefault(o => o.zgh == xgh);
+                if (yhxx != null) {
+                    return yhxx.szdw;
+                }
+            } else {
+                var yhxx = mySQL.S_Yhxxbs.SingleOrDefault(o => o.xh == xgh);
+                if (yhxx != null) {
+                    return yhxx.xydm;
+                }
+
+            }
+            return "";
+        }
     }
 }

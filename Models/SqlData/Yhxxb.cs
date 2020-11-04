@@ -13,7 +13,7 @@ namespace WebApplication1.Models.SqlData {
         public string zgh { get; set; }
         public string xm { get; set; }
         public string sfzjh { get; set; }
-        public string password { get; set; }
+        public string szdw { get; set; }
         public string yddh { get; set; }
     }
 
@@ -24,8 +24,8 @@ namespace WebApplication1.Models.SqlData {
         public string xh { get; set; }
         public string xm { get; set; }
         public string sfzjh { get; set; }
-        //public string password { get; set; }
         public string yddh { get; set; }
+        public string xydm { get; set; }
     }
 
 }

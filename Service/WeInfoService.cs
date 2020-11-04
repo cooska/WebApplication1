@@ -45,5 +45,14 @@ namespace WebApplication1.Service {
             return resp != null && resp.errcode == 0;
         }
 
+        public static bool UpdateDakePassword(string userid,string userpass) {
+            DakeUpdatePassReq req = new DakeUpdatePassReq {
+                userid = userid,
+                value = userpass
+            };
+            var serve = new PortalHttpSendService<DakeUpdatePassReq, DakeUpdatePassResp>();
+            serve.GetJsonData(req, out var resp);
+            return resp != null && resp.errcode == 0;
+        }
     }
 }

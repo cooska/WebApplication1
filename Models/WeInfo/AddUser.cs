@@ -18,7 +18,7 @@ namespace WebApplication1.Models.WeInfo {
         public string name { get; set; }
         public string mobile { get; set; }
         public string email { get; set; }
-        public List<int> department { get; set; } = new List<int> { 101601 };
+        public List<int> department { get; set; }
     }
 
     public class AddUserResp : WeInfoModelBase {
