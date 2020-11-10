@@ -78,10 +78,12 @@ namespace WebApplication1.Controllers
                         });
                     }
                     if (b) {
-                        //b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
-                        return Content("激活成功");
-                    }
-                    else {
+                        b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
+                        if (b)
+                            return Content("激活成功");
+                        else
+                            return Content("激活失败,请联系管理员");
+                    } else {
                         return Content("激活失败,请联系管理员");
                     }
                 }

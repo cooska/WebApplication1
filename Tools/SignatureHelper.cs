@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Utilities.Encoders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,14 +16,14 @@ namespace WebApplication1.Tools {
 
 		/** 用私钥进行进行签名 */
 		public static string createSignature(WebHeaderCollection headers, string url, string privateKey) {
-			Dictionary<string, string> sortedHeaders = new Dictionary<string, string>();
-			foreach (var key in headers.Keys) {
-				if (SIGNATURE_KEYWORDS.Contains(key.ToString())) {
-					sortedHeaders.Add(key.ToString(), headers.GetValues(key.ToString())[0]);
+			SortedDictionary<string, string> sortedHeaders = new SortedDictionary<string, string>();
+			foreach (string key in headers.Keys) {
+				if (SIGNATURE_KEYWORDS.Contains(key)) {
+					sortedHeaders[key] = headers[key];
 				}
 			}
 			string sortedUrl = createSortedUrl(url, sortedHeaders);
-			byte[] privateKeyBytes = Base64.Decode(privateKey);
+			byte[] privateKeyBytes = Convert.FromBase64String(privateKey);
 			var source = UTF8Encoding.UTF8.GetBytes(sortedUrl);
 			var dsa = new DSACryptoServiceProvider();
 			dsa.FromXmlString(privateKey);
@@ -36,18 +35,20 @@ namespace WebApplication1.Tools {
 		}
 
 
-		public static string createSortedUrl(string url, Dictionary<string, string> headersAndParams) {
-			string par = "";
-			foreach (var key in headersAndParams.Keys) {
-				if (par.Length > 0) {
-					par += "@";
+		public static string createSortedUrl(string url, SortedDictionary<string, string> headersAndParams) {
+			string @params = "";
+			foreach (string key in headersAndParams.Keys) {
+				if (@params.Length > 0) {
+					@params += "@";
 				}
-				par += key + "=" + headersAndParams[key];
+				@params += key + "=" + headersAndParams[key].ToString();
 			}
-			if (!url.EndsWith("?"))
+			if (!url.EndsWith("?", StringComparison.Ordinal)) {
 				url += "?";
-			//System.out.println(url + params);
-			return url + par;
+			}
+			Console.WriteLine(url + @params);
+			return url + @params;
+
 		}
-    }
+	}
 }

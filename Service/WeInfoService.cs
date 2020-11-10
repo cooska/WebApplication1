@@ -47,8 +47,8 @@ namespace WebApplication1.Service {
 
         public static bool UpdateDakePassword(string userid,string userpass) {
             DakeUpdatePassReq req = new DakeUpdatePassReq {
-                userid = userid,
-                value = userpass
+                username = userid,
+                newpassword = userpass
             };
             var serve = new PortalHttpSendService<DakeUpdatePassReq, DakeUpdatePassResp>();
             serve.GetJsonData(req, out var resp);

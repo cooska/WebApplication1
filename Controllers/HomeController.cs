@@ -78,7 +78,7 @@ namespace WebApplication1.Controllers
                 return Redirect("/ActiveInfo/Index"); 
             }
             else
-                return Content("<script>alert('登录失败');history.go(-1);</script>");
+                return Content("登录失败");
         }
 
 

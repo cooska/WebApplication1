@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using WebApplication1.Models.Attributes;
 
 namespace WebApplication1.Models.WeInfo {
-    [Portal(ProtalName = "http://ims.jsu.edu.cn/ims/api/account/update/{userid}/userpassword", HttpMethod = HttpMethodEnum.POSTLINE)]
+    [Portal(ProtalName = "http://210.43.64.135:8082/updatePassword", HttpMethod = HttpMethodEnum.GET)]
     public class DakeUpdatePassReq : IReqBase {
-        public string userid { get; set; }
-        public string value { get; set; }
+        public string username { get; set; }
+        public string newpassword { get; set; }
     }
 
     public class DakeUpdatePassResp : WeResponseBase {

@@ -84,9 +84,10 @@ namespace WebApplication1.Service {
                         request.ContentLength = postData.Length;
                         
                         if (url.Contains("ims.jsu.edu.cn")) {
+                            string t = "" + DateTimeHelper.CurrentUnixTimeMillis();
                             webheader.Add("Accept", "*/*");
                             webheader.Add("apikey", "portal");
-                            webheader.Add("timestamp", DateTime.UtcNow.Ticks.ToString());
+                            webheader.Add("timestamp", t);
                             var sign = SignatureHelper.createSignature(webheader, "/ims/api/account/update/" + list["userid"] + "/" + "userpassword",
                             "MIIBSwIBADCCASwGByqGSM44BAEwggEfAoGBAP1_U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq_xfW6MPbLm1Vs14E7gB00b_JmYLdrmVClpJ-f6AR7ECLCT7up1_63xhv4O1fnxqimFQ8E-4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjxUjC8yykrmCouuEC_BYHPUCgYEA9-GghdabPd7LvKtcNrhXuXmUr7v6OuqC-VdMCz0HgmdRWVeOutRZT-ZxBxCBgLRJFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN_C_ohNWLx-2J6ASQ7zKTxvqhRkImog9_hWuWfBpKLZl6Ae1UlZAFMO_7PSSoEFgIUKCKbCTC3wcDaQv25MjXrv4vtiF0");
                             webheader.Add("signature", sign);
@@ -114,6 +115,11 @@ namespace WebApplication1.Service {
                     } else {
                         using (var reader = new StreamReader(responseStream, Encoding.UTF8)) {
                             resultJson = reader.ReadToEnd();
+                            
+                            if (resultJson == "false")
+                                resultJson = "{\"errcode\":-1}";
+                            else if(resultJson == "true")
+                                resultJson = "{\"errcode\":0}";
                         }
                     }
                     responseStream.Flush();
@@ -134,8 +140,12 @@ namespace WebApplication1.Service {
                     if (resourceEnvironmentAttribute == null) {
                         continue;
                     }
+                    var url = resourceEnvironmentAttribute.ProtalName.Trim('/');
+                    if (!resourceEnvironmentAttribute.ProtalName.StartsWith("http")) {
+                        url = _domainUrl + "/" + url;
+                    }
                     var protalInfo = new AttributeModel {
-                        PortalName = _domainUrl + "/" + resourceEnvironmentAttribute.ProtalName.Trim('/'),
+                        PortalName = url,
                         MethodEnum = resourceEnvironmentAttribute.HttpMethod
 
                     };
