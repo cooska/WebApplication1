@@ -56,6 +56,12 @@ namespace WebApplication1.Controllers
                 f.department = userdata.department;
 
                 var tokendata = WeInfoService.GetToken();
+                var department = WeInfoService.GetDepartment(tokendata.access_token);
+                var usertype = 17;//学生
+                if (f.schoolnum.Length <= 6 && f.schoolnum != "test")
+                    usertype = 15; //教师
+                var departinfo = department.SingleOrDefault(o => o.name == f.department && o.parentid == usertype);
+
                 if (tokendata != null && tokendata.errcode == 0) {
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;
@@ -66,11 +72,12 @@ namespace WebApplication1.Controllers
                             userid = f.schoolnum,
                             mobile = f.mobile,
                             email = f.email,
-                            department = new List<int> { int.Parse(f.department) }
+                            department = new List<int> { departinfo.id }
                         });
                     } else {
                         b = WeInfoService.UpdateUserInfo(new UpdateUserInfoReq {
                             access_token = tokendata.access_token,
+                            department = new List<int> { departinfo.id},
                             userid = f.schoolnum,
                             name = f.username,
                             mobile = f.mobile,
@@ -79,13 +86,11 @@ namespace WebApplication1.Controllers
                     }
                     if (b) {
                         b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
-                        if (b)
-                            return Content("激活成功");
-                        else
-                            return Content("激活失败,请联系管理员");
-                    } else {
-                        return Content("激活失败,请联系管理员");
                     }
+                    if (b)
+                        return Content("激活成功");
+                    else
+                        return Content("激活失败,请联系管理员");
                 }
             }
 

@@ -23,6 +23,9 @@ namespace BakClass.Tools
 
         public DbSet<Yhxxb> T_Yhxxbs { get; set; }
         public DbSet<xsxxb> S_Yhxxbs { get; set; }
+        public DbSet<dwxxb> Dwxxb { get; set; }
+
+
     }
 
 }

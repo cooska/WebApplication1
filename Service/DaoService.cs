@@ -23,12 +23,16 @@ namespace WebApplication1.Service {
             if (xgh.Length <= 6 && xgh != "test") {
                 var yhxx = mySQL.T_Yhxxbs.SingleOrDefault(o => o.zgh == xgh);
                 if (yhxx != null) {
-                    return yhxx.szdw;
+                    var dwxx = mySQL.Dwxxb.SingleOrDefault(o => o.dwdm == yhxx.szdw);
+                    if(dwxx!=null)
+                        return dwxx.dwmc;
                 }
             } else {
                 var yhxx = mySQL.S_Yhxxbs.SingleOrDefault(o => o.xh == xgh);
                 if (yhxx != null) {
-                    return yhxx.xydm;
+                    var dwxx = mySQL.Dwxxb.SingleOrDefault(o => o.dwdm == yhxx.yxdm);
+                    if (dwxx != null)
+                        return dwxx.dwmc;
                 }
 
             }

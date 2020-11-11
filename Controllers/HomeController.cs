@@ -72,7 +72,7 @@ namespace WebApplication1.Controllers
                     username = username,
                     schoolnum = schoolnum,
                     idcard = idcard,
-                    department = "101" + jgdm
+                    department = jgdm
                 };
                 Response.Cookies.Append("loginuser", JsonConvert.SerializeObject(user), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
                 return Redirect("/ActiveInfo/Index"); 

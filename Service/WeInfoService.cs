@@ -54,5 +54,13 @@ namespace WebApplication1.Service {
             serve.GetJsonData(req, out var resp);
             return resp != null && resp.errcode == 0;
         }
+
+        public static List<DepartmentItem> GetDepartment(string token) {
+            var serve = new PortalHttpSendService<GetDepartmentReq, GetDepartmentResp>();
+            serve.GetJsonData(new GetDepartmentReq() { access_token = token}, out var resp);
+            if (resp == null || resp.errcode != 0)
+                return null;
+            return resp.department;
+        }
     }
 }

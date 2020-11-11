@@ -25,7 +25,14 @@ namespace WebApplication1.Models.SqlData {
         public string xm { get; set; }
         public string sfzjh { get; set; }
         public string yddh { get; set; }
-        public string xydm { get; set; }
+        public string yxdm { get; set; }
+    }
+
+    [Table("t_jcsj_dw")]
+    public class dwxxb {
+        [Key]
+        public string dwdm { get; set; }
+        public string dwmc { get; set; }
     }
 
 }

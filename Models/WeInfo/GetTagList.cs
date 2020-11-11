@@ -7,6 +7,7 @@ using WebApplication1.Models.Attributes;
 namespace WebApplication1.Models.WeInfo {
     [Portal(ProtalName = "api/org/list", HttpMethod = HttpMethodEnum.GET)]
     public class GetTagListReq : IReqBase {
+        public string access_token { get; set; }
         public string devToken { get; set; }
     }
 
