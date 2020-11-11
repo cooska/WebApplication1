@@ -60,8 +60,23 @@ namespace WebApplication1.Controllers
                 var usertype = 17;//学生
                 if (f.schoolnum.Length <= 6 && f.schoolnum != "test")
                     usertype = 15; //教师
-                var departinfo = department.SingleOrDefault(o => o.name == f.department && o.parentid == usertype);
-
+                var departinfos = department.Where(o => o.name == f.department).ToList();
+                if(departinfos == null)
+                    return Content("用户没有机构信息");
+                var departid = 0;
+                if (departinfos.Count == 1)
+                    departid = departinfos[0].id;
+                else {
+                    foreach (var item in departinfos) {
+                        departid = GetTypeId(department, item.id, usertype);
+                        if (departid > 0) {
+                            departid = item.id;
+                            break;
+                        }
+                    }
+                }
+                if (departid == 0)
+                    return Content("用户没有机构信息");
                 if (tokendata != null && tokendata.errcode == 0) {
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;
@@ -72,12 +87,12 @@ namespace WebApplication1.Controllers
                             userid = f.schoolnum,
                             mobile = f.mobile,
                             email = f.email,
-                            department = new List<int> { departinfo.id }
+                            department = new List<int> { departid }
                         });
                     } else {
                         b = WeInfoService.UpdateUserInfo(new UpdateUserInfoReq {
                             access_token = tokendata.access_token,
-                            department = new List<int> { departinfo.id},
+                            department = new List<int> { departid },
                             userid = f.schoolnum,
                             name = f.username,
                             mobile = f.mobile,
@@ -97,6 +112,15 @@ namespace WebApplication1.Controllers
             //if (resp.retCode == "0")
             //    return Redirect("/Home/Index");
             return Redirect("/Home/Index");
+        }
+
+        private int GetTypeId(List<DepartmentItem> deps, int did, int pid) {
+            var dep = deps.SingleOrDefault(o => o.id == did);
+            if (dep == null)
+                return 0;
+            if (dep.parentid == pid)
+                return dep.id;
+            return GetTypeId(deps, dep.parentid, pid);
         }
 
         [HttpPost]
