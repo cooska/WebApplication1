@@ -30,9 +30,9 @@ namespace WebApplication1.Service {
             } else {
                 var yhxx = mySQL.S_Yhxxbs.SingleOrDefault(o => o.xh == xgh);
                 if (yhxx != null) {
-                    var dwxx = mySQL.Dwxxb.SingleOrDefault(o => o.dwdm == yhxx.yxdm);
+                    var dwxx = mySQL.Bjxxb.SingleOrDefault(o => o.bjdm == yhxx.bjdm);
                     if (dwxx != null)
-                        return dwxx.dwmc;
+                        return dwxx.bjmc;
                 }
 
             }

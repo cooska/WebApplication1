@@ -26,6 +26,7 @@ namespace WebApplication1.Models.SqlData {
         public string sfzjh { get; set; }
         public string yddh { get; set; }
         public string yxdm { get; set; }
+        public string bjdm { get; set; }
     }
 
     [Table("t_jcsj_dw")]
@@ -33,6 +34,13 @@ namespace WebApplication1.Models.SqlData {
         [Key]
         public string dwdm { get; set; }
         public string dwmc { get; set; }
+    }
+
+    [Table("t_jcsj_bj")]
+    public class bjxxb {
+        [Key]
+        public string bjdm { get; set; }
+        public string bjmc { get; set; }
     }
 
 }
