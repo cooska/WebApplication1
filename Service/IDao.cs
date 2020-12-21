@@ -7,5 +7,6 @@ namespace cardapi.Service {
     public interface IDao {
         bool CheckLogin(string xm, string xgh, string sfz);
         string GetDepartment(string xgh);
+        string GetMobile(string userid);
     }
 }

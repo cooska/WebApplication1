@@ -34,7 +34,6 @@ namespace cardapi {
                 builder => builder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials()//指定处理cookie
 
                 );
 

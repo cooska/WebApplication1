@@ -184,6 +184,13 @@ namespace cardapi.Controllers
                 result = "验证码发送成功"
             }));
         }
+
+        [HttpGet]
+        [Route("~/api/Home/GetMobile/{userid}")]
+        public string GetMobile(string userid) {
+            var res = dao.GetMobile(userid);
+            return res;
+        }
         //[HttpPost]
         //public ActionResult Login(string username, string schoolnum, string idcard)
 

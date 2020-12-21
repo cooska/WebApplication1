@@ -1,4 +1,5 @@
 ﻿using BakClass.Tools;
+using cardapi.Models.SqlData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,5 +42,26 @@ namespace cardapi.Service {
             }
             return "";
         }
+
+        public string GetMobile(string userid) {
+            if (string.IsNullOrEmpty(userid))
+                return "";
+            object yhxx = null;
+            try {
+                if (userid.Length <= 6 && userid != "test") {
+                    yhxx = mySQL.T_Yhxxbs.SingleOrDefault(o => o.zgh == userid);
+                    if (yhxx != null)
+                        return ((Yhxxb)yhxx).yddh;
+                } else {
+                    yhxx = mySQL.S_Yhxxbs.SingleOrDefault(o => o.xh == userid);
+                    if (yhxx != null)
+                        return ((xsxxb)yhxx).yddh;
+                }
+            } catch (Exception ex) {
+                return "";
+            }
+            return "";
+        }
+
     }
 }
