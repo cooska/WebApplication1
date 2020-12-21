@@ -52,10 +52,10 @@ namespace cardapi.Controllers
         public IActionResult Login([FromBody] FormModel logindata) {
             if (dao.CheckLogin(logindata.username, logindata.schoolnum, logindata.idcard)) {
                 var jgdm = dao.GetDepartment(logindata.schoolnum);
-                if (Request.Cookies.ContainsKey("loginuser"))
-                    Response.Cookies.Delete("loginuser");
+                if (Request.Cookies.ContainsKey(logindata.schoolnum))
+                    Response.Cookies.Delete(logindata.schoolnum);
                 logindata.department = jgdm;
-                Response.Cookies.Append("loginuser", JsonConvert.SerializeObject(logindata), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
+                Response.Cookies.Append(logindata.schoolnum, JsonConvert.SerializeObject(logindata), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
 
                 var ret = JsonConvert.SerializeObject(new WeResponseBase {
                     errcode = 0,
@@ -68,13 +68,13 @@ namespace cardapi.Controllers
         [HttpPost]
         public IActionResult Save([FromBody] FormModel f) {
             var cookie = new FormModel();
-            if (Request.Cookies.ContainsKey(f.mobile)) {
-                var cookiedata = Request.Cookies[f.mobile];
+            if (Request.Cookies.ContainsKey(f.schoolnum)) {
+                var cookiedata = Request.Cookies[f.schoolnum];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password != f.repassword))
-                    return Index();
+                    return Content(WeInfoService.ShowErr("激活失败,请联系管理员"));
 
-                var user = Request.Cookies["loginuser"];
+                var user = Request.Cookies[f.schoolnum];
                 var userdata = JsonConvert.DeserializeObject<FormModel>(user);
                 f.username = userdata.username;
                 f.idcard = userdata.idcard;
@@ -140,7 +140,7 @@ namespace cardapi.Controllers
 
             //if (resp.retCode == "0")
             //    return Redirect("/Home/Index");
-            return Redirect("/Home/Index");
+            return Content(WeInfoService.ShowErr("激活失败,请联系管理员"));
         }
 
         private int GetTypeId(List<DepartmentItem> deps, int did, int pid) {
@@ -155,8 +155,8 @@ namespace cardapi.Controllers
         [HttpPost]
         public IActionResult PostSms([FromBody] FormModel f) {
             var cookie = new FormModel();
-            if (Request.Cookies.ContainsKey(f.mobile)) {
-                var cookiedata = Request.Cookies[f.mobile];
+            if (Request.Cookies.ContainsKey(f.schoolnum)) {
+                var cookiedata = Request.Cookies[f.schoolnum];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && cookie.verify_time.AddMinutes(1) > DateTime.Now)
                     return Content(JsonConvert.SerializeObject(new WeResponseBase {
@@ -165,8 +165,8 @@ namespace cardapi.Controllers
                     }));
                 ;
             }
-            if (Request.Cookies.ContainsKey(f.mobile))
-                Response.Cookies.Delete(f.mobile);
+            if (Request.Cookies.ContainsKey(f.schoolnum))
+                Response.Cookies.Delete(f.schoolnum);
             var code = _sms.SendSms(f.mobile);
             if (string.IsNullOrEmpty(code))
                 return Content(JsonConvert.SerializeObject(new WeResponseBase {
@@ -178,7 +178,7 @@ namespace cardapi.Controllers
             f.verify_time = DateTime.Now;
             CookieOptions options = new CookieOptions();
             options.Expires = new DateTimeOffset(DateTime.Now.AddSeconds(300));
-            Response.Cookies.Append(f.mobile, JsonConvert.SerializeObject(f), options);
+            Response.Cookies.Append(f.schoolnum, JsonConvert.SerializeObject(f), options);
             return Content(JsonConvert.SerializeObject(new WeResponseBase {
                 errcode = 0,
                 result = "验证码发送成功"

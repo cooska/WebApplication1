@@ -44,13 +44,13 @@ namespace cardapi.Controllers
         public IActionResult Save([FromBody] FormModel f)
         {
             var cookie = new FormModel();
-            if (Request.Cookies.ContainsKey(f.mobile)) {
-                var cookiedata = Request.Cookies[f.mobile];
+            if (Request.Cookies.ContainsKey(f.schoolnum)) {
+                var cookiedata = Request.Cookies[f.schoolnum];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password!=f.repassword))
-                    return Index();
+                    return Content(WeInfoService.ShowErr("激活失败,请联系管理员"));
 
-                var user = Request.Cookies["loginuser"];
+                var user = Request.Cookies[f.schoolnum];
                 var userdata= JsonConvert.DeserializeObject<FormModel>(user);
                 f.username = userdata.username;
                 f.idcard = userdata.idcard;
@@ -116,7 +116,7 @@ namespace cardapi.Controllers
 
             //if (resp.retCode == "0")
             //    return Redirect("/Home/Index");
-            return Redirect("/Home/Index");
+            return Content(WeInfoService.ShowErr("激活失败,请联系管理员"));
         }
 
         private int GetTypeId(List<DepartmentItem> deps, int did, int pid) {
@@ -132,8 +132,8 @@ namespace cardapi.Controllers
         public IActionResult PostSms([FromBody] FormModel f)
         {
             var cookie = new FormModel();
-            if(Request.Cookies.ContainsKey(f.mobile)) {
-                var cookiedata = Request.Cookies[f.mobile];
+            if(Request.Cookies.ContainsKey(f.schoolnum)) {
+                var cookiedata = Request.Cookies[f.schoolnum];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && cookie.verify_time.AddMinutes(1) > DateTime.Now)
                     return Content(JsonConvert.SerializeObject(new WeResponseBase {
@@ -142,8 +142,8 @@ namespace cardapi.Controllers
                     }));
                 ;
             }
-            if (Request.Cookies.ContainsKey(f.mobile)) Response.Cookies.Delete(f.mobile);
-            var code = _sms.SendSms(f.mobile);
+            if (Request.Cookies.ContainsKey(f.schoolnum)) Response.Cookies.Delete(f.schoolnum);
+            var code = _sms.SendSms(f.schoolnum);
             if (string.IsNullOrEmpty(code))
                 return Content(JsonConvert.SerializeObject(new WeResponseBase {
                     errcode = 2,
@@ -154,7 +154,7 @@ namespace cardapi.Controllers
             f.verify_time = DateTime.Now;
             CookieOptions options = new CookieOptions();
             options.Expires = new DateTimeOffset(DateTime.Now.AddSeconds(300));
-            Response.Cookies.Append(f.mobile, JsonConvert.SerializeObject(f),options);
+            Response.Cookies.Append(f.schoolnum, JsonConvert.SerializeObject(f),options);
             return Content(JsonConvert.SerializeObject(new WeResponseBase {
                 errcode = 0,
                 result = "验证码发送成功"
