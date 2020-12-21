@@ -16,9 +16,11 @@ using System.Web;
 using cardapi.Models;
 using Microsoft.AspNetCore.Http;
 using cardapi.Models.WeInfo;
+using Microsoft.AspNetCore.Cors;
 
 namespace cardapi.Controllers
 {
+    [EnableCors("_myAllowSpecificOrigins")]
     public class ActiveInfoController : Controller
     {
         private readonly ILogger<ActiveInfoController> _logger;
