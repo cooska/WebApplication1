@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Models.SqlData {
+namespace cardapi.Models.SqlData {
     [Table("t_jcsj_jsjbxx")]
     public class Yhxxb {
         [Key]

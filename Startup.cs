@@ -12,10 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApplication1.Models;
-using WebApplication1.Service;
+using cardapi.Models;
+using cardapi.Service;
 
-namespace WebApplication1 {
+namespace cardapi {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
@@ -69,7 +69,7 @@ namespace WebApplication1 {
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "api/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -10,11 +10,11 @@ using System.Net.Http.Headers;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
-using WebApplication1.Models;
-using WebApplication1.Models.Attributes;
-using WebApplication1.Tools;
+using cardapi.Models;
+using cardapi.Models.Attributes;
+using cardapi.Tools;
 
-namespace WebApplication1.Service {
+namespace cardapi.Service {
     public class PortalHttpSendService<TReq, TResp> : IPortalHttpSend<TReq, TResp>
     where TReq : IReqBase
     where TResp : IRespBase {

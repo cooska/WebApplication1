@@ -10,14 +10,14 @@ using Aliyun.Acs.Core.Http;
 using Aliyun.Acs.Core.Profile;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApplication1.Service;
+using cardapi.Service;
 using System.Reflection;
 using System.Web;
-using WebApplication1.Models;
+using cardapi.Models;
 using Microsoft.AspNetCore.Http;
-using WebApplication1.Models.WeInfo;
+using cardapi.Models.WeInfo;
 
-namespace WebApplication1.Controllers
+namespace cardapi.Controllers
 {
     public class ActiveInfoController : Controller
     {
@@ -39,7 +39,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(FormModel f)
+        public IActionResult Save([FromBody] FormModel f)
         {
             var cookie = new FormModel();
             if (Request.Cookies.ContainsKey(f.mobile)) {
@@ -62,7 +62,7 @@ namespace WebApplication1.Controllers
                     usertype = 15; //教师
                 var departinfos = department.Where(o => o.name == f.department).ToList();
                 if(departinfos == null)
-                    return Content("用户没有机构信息");
+                    return Content(WeInfoService.ShowErr("用户没有机构信息"));
                 var departid = 0;
                 if (departinfos.Count == 1)
                     departid = departinfos[0].id;
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
                     }
                 }
                 if (departid == 0)
-                    return Content("用户没有机构信息");
+                    return Content(WeInfoService.ShowErr("用户没有机构信息"));
                 if (tokendata != null && tokendata.errcode == 0) {
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;
@@ -103,9 +103,12 @@ namespace WebApplication1.Controllers
                         b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
                     }
                     if (b)
-                        return Content("激活成功");
+                        return Content(JsonConvert.SerializeObject(new WeResponseBase { 
+                            errcode = 0,
+                            result = "激活成功"
+                        }));
                     else
-                        return Content("激活失败,请联系管理员");
+                        return Content(WeInfoService.ShowErr("激活失败,请联系管理员"));
                 }
             }
 
@@ -124,25 +127,36 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public void PostSms([FromBody] FormModel f)
+        public IActionResult PostSms([FromBody] FormModel f)
         {
             var cookie = new FormModel();
             if(Request.Cookies.ContainsKey(f.mobile)) {
                 var cookiedata = Request.Cookies[f.mobile];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && cookie.verify_time.AddMinutes(1) > DateTime.Now)
-                    return;
+                    return Content(JsonConvert.SerializeObject(new WeResponseBase {
+                        errcode = 1,
+                        result = "请一分钟后再获取验证码"
+                    }));
+                ;
             }
             if (Request.Cookies.ContainsKey(f.mobile)) Response.Cookies.Delete(f.mobile);
             var code = _sms.SendSms(f.mobile);
             if (string.IsNullOrEmpty(code))
-                return;
+                return Content(JsonConvert.SerializeObject(new WeResponseBase {
+                    errcode = 2,
+                    result = "验证码发送失败"
+                }));
+            ;
             f.verify = code;
             f.verify_time = DateTime.Now;
             CookieOptions options = new CookieOptions();
             options.Expires = new DateTimeOffset(DateTime.Now.AddSeconds(300));
             Response.Cookies.Append(f.mobile, JsonConvert.SerializeObject(f),options);
-            //return Redirect("/Home/Index");
+            return Content(JsonConvert.SerializeObject(new WeResponseBase {
+                errcode = 0,
+                result = "验证码发送成功"
+            }));
         }
 
 

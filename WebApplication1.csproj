@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>49f78605-0cef-4788-9022-89b31faaed65</UserSecretsId>
-    <AssemblyName>WebApplication1</AssemblyName>
+    <AssemblyName>cardapi</AssemblyName>
+    <RootNamespace>cardapi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Service {
+namespace cardapi.Service {
     public interface IDao {
         bool CheckLogin(string xm, string xgh, string sfz);
         string GetDepartment(string xgh);

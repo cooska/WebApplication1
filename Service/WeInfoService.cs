@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApplication1.Models.WeInfo;
+using cardapi.Models.WeInfo;
 
-namespace WebApplication1.Service {
+namespace cardapi.Service {
     public class WeInfoService {
         /// <summary>
         /// 获取token授权
@@ -61,6 +63,14 @@ namespace WebApplication1.Service {
             if (resp == null || resp.errcode != 0)
                 return null;
             return resp.department;
+        }
+
+        public static string ShowErr(string errmsg) {
+            var ret = new WeResponseBase {
+                errcode = 1,
+                errmsg = errmsg
+            };
+            return JsonConvert.SerializeObject(ret);
         }
     }
 }

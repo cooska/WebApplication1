@@ -7,7 +7,7 @@ using System.Configuration;
 using System.Data.Common;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using WebApplication1.Models.SqlData;
+using cardapi.Models.SqlData;
 
 namespace BakClass.Tools
 {

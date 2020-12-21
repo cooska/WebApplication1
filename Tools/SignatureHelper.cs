@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Tools {
+namespace cardapi.Tools {
     public class SignatureHelper {
 		public static string APIKEY_HEADER = "apikey";
 	public static string TIMESTAMP_HEADER = "timestamp";

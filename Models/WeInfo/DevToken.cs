@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApplication1.Models.Attributes;
+using cardapi.Models.Attributes;
 
-namespace WebApplication1.Models.WeInfo {
+namespace cardapi.Models.WeInfo {
     [Portal (ProtalName = "cgi-bin/gettoken", HttpMethod = HttpMethodEnum.GET)]
     public class GetDevTokenReq:IReqBase {
         public string corpid { get; set; }

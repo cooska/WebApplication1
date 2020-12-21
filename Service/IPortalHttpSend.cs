@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApplication1.Models;
+using cardapi.Models;
 
-namespace WebApplication1.Service {
+namespace cardapi.Service {
     public interface IPortalHttpSend<in TReq, TResp>
         where TReq : IReqBase
         where TResp : IRespBase {

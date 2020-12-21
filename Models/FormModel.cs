@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication1.Models
+namespace cardapi.Models
 {
     public class FormModel
     {
@@ -16,6 +16,6 @@ namespace WebApplication1.Models
         public string mobile { get; set; }
         public string email { get; set; }
         public string verify { get; set; }
-        public DateTime verify_time { get; set; }
+        public DateTime verify_time { get; set; } = DateTime.Now;
     }
 }

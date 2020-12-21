@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApplication1.Models {
+namespace cardapi.Models {
     public class ErrorViewModel {
         public string RequestId { get; set; }
 
