@@ -78,7 +78,7 @@ namespace WebApplication1.Controllers
                 return Redirect("/ActiveInfo/Index"); 
             }
             else
-                return Content("登录失败");
+                return Content("您提交的信息和系统预留信息不符，请确认输入正确。也有可能系统预留信息有误，请与管理员联系。");
         }
 
 
