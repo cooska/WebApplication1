@@ -1,10 +1,9 @@
-﻿using BakClass.Tools;
-using cardapi.Models.SqlData;
+﻿using cardapi.Models.SqlData;
+using cardapi.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApplication1.Tools;
 
 namespace cardapi.Service {
     public class DaoService : IDao {

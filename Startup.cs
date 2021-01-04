@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using cardapi.Models;
 using cardapi.Service;
+using cardapi.Tools;
 
 namespace cardapi {
     public class Startup {
@@ -48,11 +49,11 @@ namespace cardapi {
 
             {
 
-                //ï¿½ï¿½Â¼Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½Ã»ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ò½«»á½«ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+                //µÇÂ¼Â·¾¶£ºÕâÊÇµ±ÓÃ»§ÊÔÍ¼·ÃÎÊ×ÊÔ´µ«Î´¾­¹ıÉí·İÑéÖ¤Ê±£¬³ÌĞò½«»á½«ÇëÇóÖØ¶¨Ïòµ½Õâ¸öÏà¶ÔÂ·¾¶
 
                 o.LoginPath = new PathString("/Home/Index");
 
-                //ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ê±ï¿½ï¿½ï¿½ï¿½Î´Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ó½«±ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½
+                //½ûÖ¹·ÃÎÊÂ·¾¶£ºµ±ÓÃ»§ÊÔÍ¼·ÃÎÊ×ÊÔ´Ê±£¬µ«Î´Í¨¹ı¸Ã×ÊÔ´µÄÈÎºÎÊÚÈ¨²ßÂÔ£¬ÇëÇó½«±»ÖØ¶¨Ïòµ½Õâ¸öÏà¶ÔÂ·¾¶¡£
 
                 o.AccessDeniedPath = new PathString("/Home/Privacy");
 

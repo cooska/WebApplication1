@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using cardapi.Models.SqlData;
 
-namespace WebApplication1.Tools
+namespace cardapi.Tools
 {
     /// <summary>
     /// 数据访问抽象基础类
