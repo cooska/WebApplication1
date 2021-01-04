@@ -43,4 +43,13 @@ namespace WebApplication1.Models.SqlData {
         public string bjmc { get; set; }
     }
 
+    [Table("u_active")]
+    public class useractive {
+        [Key]
+        public int id { get; set; }
+        public string u_name { get; set; }
+        public string u_school_num { get; set; }
+        public string u_phone { get; set; }
+        public DateTime u_active_time { get; set; }
+    }
 }

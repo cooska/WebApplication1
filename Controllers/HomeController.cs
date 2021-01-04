@@ -1,30 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BakClass.Tools;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WebApplication1.Models;
-using WebApplication1.Models.SqlData;
 using WebApplication1.Service;
 
-namespace WebApplication1.Controllers
-{
+namespace WebApplication1.Controllers {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IDao dao;
-        public HomeController(ILogger<HomeController> logger,IDao dbContext)
+        private readonly IAccessDao acdao;
+        public HomeController(ILogger<HomeController> logger,IDao dbContext, IAccessDao dbAccess)
         {
             _logger = logger;
             dao = dbContext;
+            acdao = dbAccess;
         }
 
         public IActionResult Index()
@@ -64,21 +56,24 @@ namespace WebApplication1.Controllers
 
 
             //}
-            if (dao.CheckLogin(username, schoolnum, idcard)) {
-                var jgdm = dao.GetDepartment(schoolnum);
-                if (Request.Cookies.ContainsKey("loginuser"))
-                    Response.Cookies.Delete("loginuser");
-                var user = new FormModel {
-                    username = username,
-                    schoolnum = schoolnum,
-                    idcard = idcard,
-                    department = jgdm
-                };
-                Response.Cookies.Append("loginuser", JsonConvert.SerializeObject(user), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
-                return Redirect("/ActiveInfo/Index"); 
+            if (acdao.GetAcitedInfo(schoolnum) != null) {
+                return Content("您的账户已经激活，请勿重复操作");
+            } else {
+                if (dao.CheckLogin(username, schoolnum, idcard)) {
+                    var jgdm = dao.GetDepartment(schoolnum);
+                    if (Request.Cookies.ContainsKey("loginuser"))
+                        Response.Cookies.Delete("loginuser");
+                    var user = new FormModel {
+                        username = username,
+                        schoolnum = schoolnum,
+                        idcard = idcard,
+                        department = jgdm
+                    };
+                    Response.Cookies.Append("loginuser", JsonConvert.SerializeObject(user), new Microsoft.AspNetCore.Http.CookieOptions { Expires = DateTime.Now.AddMinutes(10) });
+                    return Redirect("/ActiveInfo/Index");
+                } else
+                    return Content("您提交的信息和系统预留信息不符，请确认输入正确。也有可能系统预留信息有误，请与管理员联系。");
             }
-            else
-                return Content("您提交的信息和系统预留信息不符，请确认输入正确。也有可能系统预留信息有误，请与管理员联系。");
         }
 
 

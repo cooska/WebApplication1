@@ -24,10 +24,12 @@ namespace WebApplication1.Controllers
         private readonly ILogger<ActiveInfoController> _logger;
 
         readonly ISmsSend _sms;
+        readonly IAccessDao _dao;
         readonly IPortalHttpSend<IReqBase, IRespBase> _portalService;
-        public ActiveInfoController(ISmsSend sms)
+        public ActiveInfoController(ISmsSend sms,IAccessDao accessDao)
         {
             _sms = sms;
+            _dao = accessDao;
         }
         public IActionResult Index()
         {
@@ -102,9 +104,10 @@ namespace WebApplication1.Controllers
                     if (b) {
                         b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
                     }
-                    if (b)
+                    if (b) {
+                        var ret = _dao.InsertActivedInfo(f.username, f.schoolnum, f.mobile);
                         return Content("激活成功");
-                    else
+                    } else
                         return Content("激活失败,请联系管理员");
                 }
             }
