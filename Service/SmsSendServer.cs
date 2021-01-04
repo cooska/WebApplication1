@@ -32,7 +32,7 @@ namespace cardapi.Service
             };
             request.AddQueryParameters("PhoneNumbers", mobile);
             request.AddQueryParameters("SignName", "信息网络中心");
-            request.AddQueryParameters("TemplateCode", "SMS_207496185");
+            request.AddQueryParameters("TemplateCode", "SMS_204110082");
             // 验证码参数，code 转json格式
             request.AddBodyParameters("TemplateParam", JsonConvert.SerializeObject(code));
             try
