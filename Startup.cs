@@ -61,7 +61,7 @@ namespace cardapi {
             services.AddScoped<IDao, DaoService>();
             services.AddScoped<IAccessDao, AccessDaoService>();
             var conn = Configuration.GetConnectionString("MysqlConnection");
-            var accessconn = Configuration.GetConnectionString("AccessConnection");
+            var accessconn =  string.Format(Configuration.GetConnectionString("AccessConnection"), AppContext.BaseDirectory);
             services.AddDbContext<DbHelperMySQL>(option => option.UseMySql(conn));
             services.AddDbContext<DbHelperAccess>(option => option.UseJet(accessconn));
         }
