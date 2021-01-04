@@ -45,6 +45,9 @@ namespace cardapi.Controllers
         [HttpPost]
         public IActionResult Save([FromBody] FormModel f)
         {
+            if (_dao.GetAcitedInfo(f.schoolnum) != null) {
+                return Content(WeInfoService.ShowErr("您的账户已经激活成功，请勿重复操作!"));
+            }
             var cookie = new FormModel();
             if (Request.Cookies.ContainsKey(f.schoolnum)) {
                 var cookiedata = Request.Cookies[f.schoolnum];
@@ -106,13 +109,13 @@ namespace cardapi.Controllers
                     if (b) {
                         b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
                     }
-                    if (b)
+                    if (b) {
                         var ret = _dao.InsertActivedInfo(f.username, f.schoolnum, f.mobile);
-                    return Content(JsonConvert.SerializeObject(new WeResponseBase { 
-                            errcode = 0,
-                            result = "激活成功"
+                        return Content(JsonConvert.SerializeObject(new WeResponseBase {
+                            errcode = ret == true? 0:11,
+                            result = ret == true ? "激活成功":"激活失败"
                         }));
-                    else
+                    } else
                         return Content(WeInfoService.ShowErr("激活失败,请联系管理员"));
                 }
             }

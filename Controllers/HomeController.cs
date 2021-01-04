@@ -9,6 +9,8 @@ using cardapi.Models.WeInfo;
 using cardapi.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Cors;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace cardapi.Controllers
 {
@@ -19,7 +21,7 @@ namespace cardapi.Controllers
         readonly ISmsSend _sms;
         private readonly IDao dao;
         private readonly IAccessDao acdao;
-        public HomeController(ILogger<HomeController> logger,IDao dbContext, IAccessDao dbAccess)
+        public HomeController(ILogger<HomeController> logger,IDao dbContext, IAccessDao dbAccess, ISmsSend sms)
         {
             _logger = logger;
             dao = dbContext;
@@ -43,7 +45,10 @@ namespace cardapi.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         [HttpPost]
-        public IActionResult Login([FromBody] FormModel logindata) {
+        public IActionResult Login(FormModel logindata) {
+            if(acdao.GetAcitedInfo(logindata.schoolnum) !=null) {
+                return Content(WeInfoService.ShowErr("您的账户已经激活成功，请勿重复操作!"));
+            }
             if (dao.CheckLogin(logindata.username, logindata.schoolnum, logindata.idcard)) {
                 var jgdm = dao.GetDepartment(logindata.schoolnum);
                 if (Request.Cookies.ContainsKey(logindata.schoolnum))

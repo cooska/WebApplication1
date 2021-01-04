@@ -86,7 +86,7 @@ namespace cardapi {
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=Home}/{action=Index}/{id?}");
+                    pattern: "/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
