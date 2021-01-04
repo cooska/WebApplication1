@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using BakClass.Tools;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using cardapi.Models;
@@ -26,10 +18,12 @@ namespace cardapi.Controllers
         private readonly ILogger<HomeController> _logger;
         readonly ISmsSend _sms;
         private readonly IDao dao;
-        public HomeController(ILogger<HomeController> logger,IDao dbContext, ISmsSend sms)
+        private readonly IAccessDao acdao;
+        public HomeController(ILogger<HomeController> logger,IDao dbContext, IAccessDao dbAccess)
         {
             _logger = logger;
             dao = dbContext;
+            acdao = dbAccess;
             _sms = sms;
         }
 

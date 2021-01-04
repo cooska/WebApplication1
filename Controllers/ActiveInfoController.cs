@@ -26,10 +26,12 @@ namespace cardapi.Controllers
         private readonly ILogger<ActiveInfoController> _logger;
 
         readonly ISmsSend _sms;
+        readonly IAccessDao _dao;
         readonly IPortalHttpSend<IReqBase, IRespBase> _portalService;
-        public ActiveInfoController(ISmsSend sms)
+        public ActiveInfoController(ISmsSend sms,IAccessDao accessDao)
         {
             _sms = sms;
+            _dao = accessDao;
         }
         public IActionResult Index()
         {
@@ -105,7 +107,8 @@ namespace cardapi.Controllers
                         b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
                     }
                     if (b)
-                        return Content(JsonConvert.SerializeObject(new WeResponseBase { 
+                        var ret = _dao.InsertActivedInfo(f.username, f.schoolnum, f.mobile);
+                    return Content(JsonConvert.SerializeObject(new WeResponseBase { 
                             errcode = 0,
                             result = "激活成功"
                         }));

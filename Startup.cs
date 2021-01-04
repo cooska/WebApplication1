@@ -1,8 +1,8 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BakClass.Tools;
+using EntityFrameworkCore.Jet;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,18 +48,21 @@ namespace cardapi {
 
             {
 
-                //µÇÂ¼Â·¾¶£ºÕâÊÇµ±ÓÃ»§ÊÔÍ¼·ÃÎÊ×ÊÔ´µ«Î´¾­¹ýÉí·ÝÑéÖ¤Ê±£¬³ÌÐò½«»á½«ÇëÇóÖØ¶¨Ïòµ½Õâ¸öÏà¶ÔÂ·¾¶
+                //ï¿½ï¿½Â¼Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½Ã»ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ò½«»á½«ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 
                 o.LoginPath = new PathString("/Home/Index");
 
-                //½ûÖ¹·ÃÎÊÂ·¾¶£ºµ±ÓÃ»§ÊÔÍ¼·ÃÎÊ×ÊÔ´Ê±£¬µ«Î´Í¨¹ý¸Ã×ÊÔ´µÄÈÎºÎÊÚÈ¨²ßÂÔ£¬ÇëÇó½«±»ÖØ¶¨Ïòµ½Õâ¸öÏà¶ÔÂ·¾¶¡£
+                //ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ê±ï¿½ï¿½ï¿½ï¿½Î´Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ó½«±ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½
 
                 o.AccessDeniedPath = new PathString("/Home/Privacy");
 
             });
             services.AddScoped<IDao, DaoService>();
+            services.AddScoped<IAccessDao, AccessDaoService>();
             var conn = Configuration.GetConnectionString("MysqlConnection");
+            var accessconn = Configuration.GetConnectionString("AccessConnection");
             services.AddDbContext<DbHelperMySQL>(option => option.UseMySql(conn));
+            services.AddDbContext<DbHelperAccess>(option => option.UseJet(accessconn));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
