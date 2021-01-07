@@ -51,7 +51,7 @@ namespace WebApplication1.Controllers
                 var cookiedata = Request.Cookies[f.mobile];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password!=f.repassword))
-                    return View();
+                    return Redirect("/ActiveInfo/Index");
 
                 var user = Request.Cookies["loginuser"];
                 var userdata= JsonConvert.DeserializeObject<FormModel>(user);
@@ -66,8 +66,13 @@ namespace WebApplication1.Controllers
                 if (f.schoolnum.Length <= 6 && f.schoolnum != "test")
                     usertype = 15; //教师
                 var departinfos = department.Where(o => o.name == f.department).ToList();
-                if(departinfos == null)
+                if(departinfos == null) {
+                    var userinfo = WeInfoService.GetDakeUserinfo(f.schoolnum);
+                    if(userinfo !=null) {
+                        return Content("企业微信数据库中没有 " + userinfo.eduOrgCn + "(" + userinfo.eduOrgID + ")" + " 的机构信息。");
+                    }
                     return Content("用户没有机构信息");
+                }
                 var departid = 0;
                 if (departinfos.Count == 1)
                     departid = departinfos[0].id;
@@ -80,8 +85,13 @@ namespace WebApplication1.Controllers
                         }
                     }
                 }
-                if (departid == 0)
+                if (departid == 0) {
+                    var userinfo = WeInfoService.GetDakeUserinfo(f.schoolnum);
+                    if (userinfo != null) {
+                        return Content("企业微信数据库中没有 " + userinfo.eduOrgCn + "(ID:" + userinfo.eduOrgID + ") 的机构信息。");
+                    }
                     return Content("用户没有机构信息");
+                }
                 if (tokendata != null && tokendata.errcode == 0) {
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;

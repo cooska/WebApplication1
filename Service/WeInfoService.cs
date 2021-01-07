@@ -55,6 +55,16 @@ namespace WebApplication1.Service {
             serve.GetJsonData(req, out var resp);
             return resp != null && resp.errcode == 0;
         }
+        public static DakeUserInfo GetDakeUserinfo(string userid) {
+            DakeGetUserInfoReq req = new DakeGetUserInfoReq {
+                username = userid,
+            };
+            var serve = new PortalHttpSendService<DakeGetUserInfoReq, DakeGetUserInfoResp>();
+            serve.GetJsonData(req, out var resp);
+            if (resp == null || resp.code != 200 || resp.data == null)
+                return null;
+            return resp.data.account;
+        }
 
         public static List<DepartmentItem> GetDepartment(string token) {
             var serve = new PortalHttpSendService<GetDepartmentReq, GetDepartmentResp>();
