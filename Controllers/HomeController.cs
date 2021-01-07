@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WebApplication1.Models;
+using WebApplication1.Models.SqlData;
+using WebApplication1.Models.WeInfo;
 using WebApplication1.Service;
 
 namespace WebApplication1.Controllers {
@@ -56,9 +60,9 @@ namespace WebApplication1.Controllers {
 
 
             //}
-            if (acdao.GetAcitedInfo(schoolnum) != null) {
-                return Content("您的账户已经激活，请勿重复操作");
-            } else {
+            //if (acdao.GetAcitedInfo(schoolnum) != null) {
+            //    return Content("您的账户已经激活，请勿重复操作");
+            //} else {
                 if (dao.CheckLogin(username, schoolnum, idcard)) {
                     var jgdm = dao.GetDepartment(schoolnum);
                     if (Request.Cookies.ContainsKey("loginuser"))
@@ -73,6 +77,35 @@ namespace WebApplication1.Controllers {
                     return Redirect("/ActiveInfo/Index");
                 } else
                     return Content("您提交的信息和系统预留信息不符，请确认输入正确。也有可能系统预留信息有误，请与管理员联系。");
+            //}
+        }
+
+
+        public void GetNullMobile() {
+            var list = dao.GetCheckNullMobiles();
+            var templist = new List<List<CheckNullMobileModel>>();
+            int n = list.Count % 200 + 1;
+            for(int i = 0; i <= n; i++) {
+                templist.Add(list.GetRange(i * 200, 200));
+            }
+            var tokendata = WeInfoService.GetToken();
+            foreach(var ll in templist) {
+                new Thread(() => {
+                    foreach (var l in ll) {
+                        var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, l.schoolnum);
+                        if (weuserdata != null) {
+                            l.mobile = weuserdata.mobile;
+                        }
+                    }
+                    foreach (var l in ll) {
+                        if (string.IsNullOrEmpty(l.mobile))
+                            continue;
+                        var b = WeInfoService.UpdateDakePassword(l.schoolnum, l.mobile, DakeEnum.telephonenumber);
+                        if (!b)
+                            Console.WriteLine(l.mobile + ":" + l.schoolnum);
+                        Thread.Sleep(1000);
+                    }
+                }).Start();
             }
         }
 

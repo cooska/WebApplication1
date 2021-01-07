@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Models.Attributes;
 
-namespace cardapi.Models.WeInfo {
+namespace WebApplication1.Models.WeInfo {
     public enum DakeEnum {
         userpassword,
         mail,
@@ -14,7 +14,7 @@ namespace cardapi.Models.WeInfo {
     public class DakeUpdatePassReq : IReqBase {
         public string username { get; set; }
         public string newvalue { get; set; }
-        public string methoed { get; set; }
+        public string method { get; set; }
     }
 
     public class DakeUpdatePassResp : WeResponseBase {

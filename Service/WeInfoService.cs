@@ -49,7 +49,7 @@ namespace WebApplication1.Service {
             DakeUpdatePassReq req = new DakeUpdatePassReq {
                 username = userid,
                 newvalue = userpass,
-                methoed = method.ToString()
+                method = method.ToString()
             };
             var serve = new PortalHttpSendService<DakeUpdatePassReq, DakeUpdatePassResp>();
             serve.GetJsonData(req, out var resp);
