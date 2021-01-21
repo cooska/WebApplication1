@@ -95,6 +95,7 @@ namespace WebApplication1.Controllers
                 if (tokendata != null && tokendata.errcode == 0) {
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;
+                    var err = "";
                     if (weuserdata == null || weuserdata.errcode == 60111) {
                         b = WeInfoService.CreateUserInfo(new AddUserReq {
                             access_token = tokendata.access_token,
@@ -103,7 +104,7 @@ namespace WebApplication1.Controllers
                             mobile = f.mobile,
                             email = f.email,
                             department = new List<int> { departid }
-                        });
+                        },out err);
                     } else {
                         b = WeInfoService.UpdateUserInfo(new UpdateUserInfoReq {
                             access_token = tokendata.access_token,
@@ -112,7 +113,7 @@ namespace WebApplication1.Controllers
                             name = f.username,
                             mobile = f.mobile,
                             email = f.email
-                        });
+                        }, out err);
                     }
                     if (b) {
                         var ub = WeInfoService.UpdateDakePassword(f.schoolnum, f.password, DakeEnum.userpassword);
@@ -121,18 +122,21 @@ namespace WebApplication1.Controllers
                         if (ub && pb && mb) {
                             //var ret = _dao.InsertActivedInfo(f.username, f.schoolnum, f.mobile);
                             return Content("激活成功");
-                        } 
+                        }
                         if (!ub) {
                             return Content("激活失败,用户密码更新失败");
-                        } 
+                        }
                         if (!pb) {
                             return Content("激活失败,手机号码更新失败");
-                        } 
+                        }
                         if (!mb) {
                             return Content("激活失败,电子邮箱更新失败");
-                        } 
-                    } else
+                        }
+                    } else {
+                        if (!string.IsNullOrEmpty(err))
+                            return Content("激活失败," + err);
                         return Content("激活失败,请联系管理员");
+                    }
                 }
             }
 

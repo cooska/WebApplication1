@@ -30,19 +30,32 @@ namespace WebApplication1.Service {
             return resp;
         }
 
-        public static bool CreateUserInfo(AddUserReq user) {
+        public static bool CreateUserInfo(AddUserReq user, out string msg) {
             AddUserResp resp;
             var serve = new PortalHttpSendService<AddUserReq, AddUserResp>();
             serve.GetJsonData(user, out resp);
-            return resp != null && resp.errcode ==0;
+            if( resp != null && resp.errcode == 0) {
+                msg = "";
+                return true;
+            }
+            else {
+                msg = resp.errmsg;
+                return false;
+            }
         }
 
 
-        public static bool UpdateUserInfo(UpdateUserInfoReq user) {
+        public static bool UpdateUserInfo(UpdateUserInfoReq user, out string msg) {
             UpdateUserInfoResp resp;
             var serve = new PortalHttpSendService<UpdateUserInfoReq, UpdateUserInfoResp>();
             serve.GetJsonData(user, out resp);
-            return resp != null && resp.errcode == 0;
+            if (resp != null && resp.errcode == 0) {
+                msg = "";
+                return true;
+            } else {
+                msg = resp.errmsg;
+                return false;
+            }
         }
 
         public static bool UpdateDakePassword(string userid,string userpass, DakeEnum method) {
