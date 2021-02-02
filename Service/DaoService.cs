@@ -1,8 +1,9 @@
-﻿using BakClass.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Models.SqlData;
+using WebApplication1.Tools;
 
 namespace WebApplication1.Service {
     public class DaoService : IDao {
@@ -37,6 +38,24 @@ namespace WebApplication1.Service {
 
             }
             return "";
+        }
+        public List<CheckNullMobileModel> GetCheckNullMobiles() {
+            List<CheckNullMobileModel> temp = new List<CheckNullMobileModel>();
+            var jsxx = mySQL.T_Yhxxbs.Where(o =>string.IsNullOrEmpty(o.yddh));
+            var xsxx = mySQL.S_Yhxxbs.Where(o => string.IsNullOrEmpty(o.yddh));
+            foreach(var xx in jsxx) {
+                temp.Add(new CheckNullMobileModel {
+                    mobile = xx.yddh,
+                     schoolnum= xx.zgh
+                });
+            }
+            foreach (var xx in xsxx) {
+                temp.Add(new CheckNullMobileModel {
+                    mobile = xx.yddh,
+                    schoolnum = xx.xh
+                });
+            }
+            return temp;
         }
     }
 }

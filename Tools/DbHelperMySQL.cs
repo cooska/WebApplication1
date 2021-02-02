@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models.SqlData;
 
-namespace BakClass.Tools
+namespace WebApplication1.Tools
 {
     /// <summary>
     /// 数据访问抽象基础类
@@ -25,8 +25,6 @@ namespace BakClass.Tools
         public DbSet<xsxxb> S_Yhxxbs { get; set; }
         public DbSet<dwxxb> Dwxxb { get; set; }
         public DbSet<bjxxb> Bjxxb { get; set; }
-
-
     }
 
 }

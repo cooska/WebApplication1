@@ -24,10 +24,12 @@ namespace WebApplication1.Controllers
         private readonly ILogger<ActiveInfoController> _logger;
 
         readonly ISmsSend _sms;
+        readonly IAccessDao _dao;
         readonly IPortalHttpSend<IReqBase, IRespBase> _portalService;
-        public ActiveInfoController(ISmsSend sms)
+        public ActiveInfoController(ISmsSend sms,IAccessDao accessDao)
         {
             _sms = sms;
+            _dao = accessDao;
         }
         public IActionResult Index()
         {
@@ -41,12 +43,15 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(FormModel f)
         {
+            //if(_dao.GetAcitedInfo(f.schoolnum) !=null) {
+            //    return Content("您的账户已经激活，请勿重复操作");
+            //}
             var cookie = new FormModel();
             if (Request.Cookies.ContainsKey(f.mobile)) {
                 var cookiedata = Request.Cookies[f.mobile];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
                 if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password!=f.repassword))
-                    return Index();
+                    return Redirect("/ActiveInfo/Index");
 
                 var user = Request.Cookies["loginuser"];
                 var userdata= JsonConvert.DeserializeObject<FormModel>(user);
@@ -61,8 +66,13 @@ namespace WebApplication1.Controllers
                 if (f.schoolnum.Length <= 6 && f.schoolnum != "test")
                     usertype = 15; //教师
                 var departinfos = department.Where(o => o.name == f.department).ToList();
-                if(departinfos == null)
+                if(departinfos == null) {
+                    var userinfo = WeInfoService.GetDakeUserinfo(f.schoolnum);
+                    if(userinfo !=null) {
+                        return Content("企业微信数据库中没有 " + userinfo.eduOrgCn + "(" + userinfo.eduOrgID + ")" + " 的机构信息。");
+                    }
                     return Content("用户没有机构信息");
+                }
                 var departid = 0;
                 if (departinfos.Count == 1)
                     departid = departinfos[0].id;
@@ -75,11 +85,17 @@ namespace WebApplication1.Controllers
                         }
                     }
                 }
-                if (departid == 0)
+                if (departid == 0) {
+                    var userinfo = WeInfoService.GetDakeUserinfo(f.schoolnum);
+                    if (userinfo != null) {
+                        return Content("企业微信数据库中没有 " + userinfo.eduOrgCn + "(ID:" + userinfo.eduOrgID + ") 的机构信息。");
+                    }
                     return Content("用户没有机构信息");
+                }
                 if (tokendata != null && tokendata.errcode == 0) {
                     var weuserdata = WeInfoService.GetUserInfo(tokendata.access_token, f.schoolnum);
                     var b = false;
+                    var err = "";
                     if (weuserdata == null || weuserdata.errcode == 60111) {
                         b = WeInfoService.CreateUserInfo(new AddUserReq {
                             access_token = tokendata.access_token,
@@ -88,7 +104,7 @@ namespace WebApplication1.Controllers
                             mobile = f.mobile,
                             email = f.email,
                             department = new List<int> { departid }
-                        });
+                        },out err);
                     } else {
                         b = WeInfoService.UpdateUserInfo(new UpdateUserInfoReq {
                             access_token = tokendata.access_token,
@@ -97,15 +113,30 @@ namespace WebApplication1.Controllers
                             name = f.username,
                             mobile = f.mobile,
                             email = f.email
-                        });
+                        }, out err);
                     }
                     if (b) {
-                        b = WeInfoService.UpdateDakePassword(f.schoolnum, f.password);
-                    }
-                    if (b)
-                        return Content("激活成功");
-                    else
+                        var ub = WeInfoService.UpdateDakePassword(f.schoolnum, f.password, DakeEnum.userpassword);
+                        var pb = WeInfoService.UpdateDakePassword(f.schoolnum, f.mobile, DakeEnum.telephonenumber);
+                        var mb = WeInfoService.UpdateDakePassword(f.schoolnum, f.email, DakeEnum.mail);
+                        if (ub && pb && mb) {
+                            //var ret = _dao.InsertActivedInfo(f.username, f.schoolnum, f.mobile);
+                            return Content("激活成功");
+                        }
+                        if (!ub) {
+                            return Content("激活失败,用户密码更新失败");
+                        }
+                        if (!pb) {
+                            return Content("激活失败,手机号码更新失败");
+                        }
+                        if (!mb) {
+                            return Content("激活失败,电子邮箱更新失败");
+                        }
+                    } else {
+                        if (!string.IsNullOrEmpty(err))
+                            return Content("激活失败," + err);
                         return Content("激活失败,请联系管理员");
+                    }
                 }
             }
 
@@ -145,7 +176,6 @@ namespace WebApplication1.Controllers
             Response.Cookies.Append(f.mobile, JsonConvert.SerializeObject(f),options);
             //return Redirect("/Home/Index");
         }
-
 
     }
 }

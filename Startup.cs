@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BakClass.Tools;
+using EntityFrameworkCore.Jet;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApplication1.Models;
 using WebApplication1.Service;
+using WebApplication1.Tools;
 
 namespace WebApplication1 {
     public class Startup {
@@ -46,8 +47,11 @@ namespace WebApplication1 {
 
             });
             services.AddScoped<IDao, DaoService>();
+            services.AddScoped<IAccessDao, AccessDaoService>();
             var conn = Configuration.GetConnectionString("MysqlConnection");
+            var accessconn = string.Format(Configuration.GetConnectionString("AccessConnection"), AppContext.BaseDirectory);
             services.AddDbContext<DbHelperMySQL>(option => option.UseMySql(conn));
+            services.AddDbContext<DbHelperAccess>(option => option.UseJet(accessconn));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
