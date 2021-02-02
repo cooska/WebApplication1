@@ -56,5 +56,15 @@ namespace WebApplication1.Service
                 return "";
             }
         }
+
+        public string SendCmSms(string mobile) {
+            WeInfo.WsSmsService wsSms = new WeInfo.WsSmsServiceClient();
+            var res = wsSms.sendTplSmsAsync(new WeInfo.sendTplSmsRequest {
+                Body = new WeInfo.sendTplSmsRequestBody {
+                    arg0 = ""
+                }
+            });
+            return res.Result.Body.@return;
+        }
     }
 }

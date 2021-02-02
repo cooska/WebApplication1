@@ -135,6 +135,7 @@ namespace WebApplication1.Controllers
             }
             if (Request.Cookies.ContainsKey(f.mobile)) Response.Cookies.Delete(f.mobile);
             var code = _sms.SendSms(f.mobile);
+            var res = _sms.SendCmSms(f.mobile);
             if (string.IsNullOrEmpty(code))
                 return;
             f.verify = code;
