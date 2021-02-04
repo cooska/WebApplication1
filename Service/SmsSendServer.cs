@@ -6,13 +6,22 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using WebApplication1.Models;
+using WebApplication1.Tools;
 
 namespace WebApplication1.Service
 {
     public class SmsSendServer : ISmsSend
     {
+        private string GetVerify(int length) {
+            // 随机生成6位验证码
+            var rd = new Random();
+            var code = rd.Next(100000, 999999);
+            return code.ToString();
+        }
         public string SendSms(string mobile)
         {
             // accesskeyId、secret对应你的阿里云产品id
@@ -60,12 +69,42 @@ namespace WebApplication1.Service
 
         public string SendCmSms(string mobile) {
             WeInfo.WsSmsService wsSms = new WeInfo.WsSmsServiceClient();
-            var res = wsSms.sendTplSmsAsync(new WeInfo.sendTplSmsRequest {
-                Body = new WeInfo.sendTplSmsRequestBody {
-                    arg0 = ""
-                }
-            });
-            return res.Result.Body.@return;
+            var verify = GetVerify(0);
+            var req = new CMSmsRequest {
+                apId = "usereg",
+                secretKey = "Reg@202102041103",
+                sign = "Sc9pavWGe",
+                templateId = "b883350b330e45ec8c18c189994d9fc8",
+                ecName = "吉首大学",
+                mobiles = new List<Cstring> { new Cstring { @string = mobile} },
+                @params = new List<Cstring> { new Cstring { @string =  verify} },
+                addSerial = ""
+            };
+            try { 
+                var md5str = req.ecName + req.apId + req.secretKey + req.templateId + req.mobiles[0].@string + req.@params[0].@string + req.sign + req.addSerial;
+                var mac = GetMD5(md5str);
+                req.mac = mac;
+                var xml = XmlHelper.Serialize(req);
+                var res = wsSms.sendTplSmsAsync(new WeInfo.sendTplSmsRequest {
+                    Body = new WeInfo.sendTplSmsRequestBody {
+                        arg0 = xml
+                    }
+                });
+                var ret = res.Result.Body.@return;
+                var retobj = XmlHelper.Deserialize<CMSmsResponse>(ret);
+                if (retobj.success != "true")
+                    return "";
+                return verify;
+            } catch(Exception ex) {
+                return "";
+            }
+        }
+
+        private string GetMD5(string str) {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+            string result = BitConverter.ToString(md5.ComputeHash(bytes));
+            return result.Replace("-", "").ToLower();
         }
     }
 }

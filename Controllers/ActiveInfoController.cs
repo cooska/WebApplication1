@@ -165,11 +165,11 @@ namespace WebApplication1.Controllers
                     return;
             }
             if (Request.Cookies.ContainsKey(f.mobile)) Response.Cookies.Delete(f.mobile);
-            var code = _sms.SendSms(f.mobile);
+            //var code = _sms.SendSms(f.mobile);
             var res = _sms.SendCmSms(f.mobile);
-            if (string.IsNullOrEmpty(code))
+            if (string.IsNullOrEmpty(res))
                 return;
-            f.verify = code;
+            f.verify = res;
             f.verify_time = DateTime.Now;
             CookieOptions options = new CookieOptions();
             options.Expires = new DateTimeOffset(DateTime.Now.AddSeconds(300));
