@@ -74,7 +74,7 @@ namespace WebApplication1.Service
                 apId = "usereg",
                 secretKey = "Reg@202102041103",
                 sign = "Sc9pavWGe",
-                templateId = "b883350b330e45ec8c18c189994d9fc8",
+                templateId = "bb17998bd477441184703717bce54e47",
                 ecName = "吉首大学",
                 mobiles = new List<Cstring> { new Cstring { @string = mobile} },
                 @params = new List<Cstring> { new Cstring { @string =  verify} },
