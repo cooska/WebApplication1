@@ -16,6 +16,7 @@ using System.Web;
 using WebApplication1.Models;
 using Microsoft.AspNetCore.Http;
 using WebApplication1.Models.WeInfo;
+using WebApplication1.Tools;
 
 namespace WebApplication1.Controllers
 {
@@ -50,9 +51,14 @@ namespace WebApplication1.Controllers
             if (Request.Cookies.ContainsKey(f.mobile)) {
                 var cookiedata = Request.Cookies[f.mobile];
                 cookie = JsonConvert.DeserializeObject<FormModel>(cookiedata);
-                if (cookie != null && (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password!=f.repassword))
-                    return Redirect("/ActiveInfo/Index");
-
+                if (cookie != null) {
+                    if (cookie.verify_time.AddMinutes(5) < DateTime.Now || f.verify != cookie.verify || f.password != f.repassword)
+                        return Redirect("/ActiveInfo/Index");
+                    if (!f.password.HasNum() || !f.password.HasLetter() || !f.password.HasCapLetter()||!f.password.HasSpecial())
+                        return Content("密码必须同时包含数字、大小写字母、特殊字符");
+                    if (f.password.LegalLength())
+                        return Content("密码长度不能小于8位");
+                }
                 var user = Request.Cookies["loginuser"];
                 var userdata= JsonConvert.DeserializeObject<FormModel>(user);
                 f.username = userdata.username;
